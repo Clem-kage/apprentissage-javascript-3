@@ -1,45 +1,55 @@
 // const url = `https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srlimit=20&srsearch=${searchInput}`
 
-
-let searchBarre = document.querySelector('form input')
-let resultArea = document.querySelector('.results-display')
+// appel su DOM------------------------------
+let searchBarre = document.querySelector('form input');
+let resultArea = document.querySelector('.results-display');
 let liste = document.createElement("ul");
 resultArea.appendChild(liste);
-    // let liste = document.querySelector('ul');
+let loader = document.querySelector('.loader');
+let errorSpace = document.querySelector('.error-msg')
+//-----------------------------------------
+
 
 let suppList = () =>{
     console.log('supp')
-    // let liste = document.querySelector('ul');
     if(liste){
         while (liste.hasChildNodes()) {
             liste.removeChild(liste.firstChild);
           }
     }
-     
-    // resultArea.remove()
 }
+
 let createList = (el)=>{
     let element = document.createElement('li');
     let link = document.createElement('a');
     link.href = `https://fr.wikipedia.org/wiki/${el.title}`;
     link.textContent = el.title;
-    // element.textContent = el.title
     resultArea.appendChild(liste);
     liste.appendChild(element);
     element.appendChild(link);
+    element.style.listStyle = "none"
 }
 
 let affichage = (tab)=>{
+    let newTab = []
     console.log('affi')
       tab.forEach(el => {
-        console.log("fctaffi")
+          newTab.push(el);
           createList(el)
       });
+     console.log(newTab.length) 
+     if(newTab.length < 1){
+        errorSpace.textContent = 'aucun résultat'
+     }
+     else{
+        errorSpace.textContent = ''
+     }
 }
 
-let appelApi = (value)=>{
+let  appelApi  = async (value)=>{
     let searchInput = value.target.value;
-    fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srlimit=20&srsearch=${searchInput}`)
+    loading()
+     await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srlimit=20&srsearch=${searchInput}`)
     .then((response) => response.json())
     .then((data) => {
         console.log(data.query.search)
@@ -47,14 +57,34 @@ let appelApi = (value)=>{
         if(result){
         suppList()
         affichage(result)
+        endLoading()
         }
     })
- // .then((data) => console.log(data));
+    .catch((err)=>{
+        // errorsituation()
+
+        suppList()
+        // errorSpace.textContent = err.status
+    })
 }
 
 let action = (e)=>{
    e.preventDefault()
    appelApi(e)
+}
+
+let loading = ()=>{
+      loader.style.display ='flex'
+ }
+let endLoading = ()=>{
+      loader.style.display ='none'
+      console.log('endloading')
+}
+
+
+let errorsituation = ()=>{
+    alert("problème de connexion");
+    // loading()
 }
 
 searchBarre.addEventListener('input', action)
