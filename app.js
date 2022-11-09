@@ -21,12 +21,12 @@ let suppList = () =>{
 let createList = (el)=>{
     let element = document.createElement('li');
     let link = document.createElement('a');
-    // link.href = el.snippet;
-    // link.textContent = el.title;
-    element.textContent = el.title
+    link.href = `https://fr.wikipedia.org/wiki/${el.title}`;
+    link.textContent = el.title;
+    // element.textContent = el.title
     resultArea.appendChild(liste);
     liste.appendChild(element);
-    // element.appendChild(link);
+    element.appendChild(link);
 }
 
 let affichage = (tab)=>{
