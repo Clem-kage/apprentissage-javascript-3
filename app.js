@@ -62,9 +62,9 @@ let  appelApi  = async (value)=>{
     })
     .catch((err)=>{
         // errorsituation()
-
+        endLoading()
         suppList()
-        // errorSpace.textContent = err.status
+        errorSpace.textContent = 'problème de réseau'
     })
 }
 
